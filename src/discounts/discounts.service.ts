@@ -27,7 +27,8 @@ export class DiscountsService {
   }
 
   async findAll() {
-    return await this.discountModel.find();
+    const discounts = await this.discountModel.find();
+    return { discounts };
   }
 
   async findOne(id: string) {
@@ -38,7 +39,7 @@ export class DiscountsService {
     if (!discount)
       throw new NotFoundException(`Discount with id ${id} not found`);
 
-    return discount;
+    return { discount };
   }
 
   async update(
@@ -48,7 +49,7 @@ export class DiscountsService {
   ) {
     let imageUrl: string;
 
-    const discount = await this.discountModel.findById(id);
+    let discount = await this.discountModel.findById(id);
     if (!discount)
       throw new NotFoundException(`Discount with id ${id} not found`);
 
@@ -59,8 +60,8 @@ export class DiscountsService {
     }
 
     const discountToUpdate = { imageUrl, ...updateDiscountDto };
-
-    return await discount.update(discountToUpdate);
+    discount = await discount.update(discountToUpdate);
+    return { discount };
   }
 
   async remove(id: string) {
@@ -74,10 +75,12 @@ export class DiscountsService {
   }
 
   async findAllByCategory(categoryId: string) {
-    return await this.discountModel.find({ category: categoryId });
+    const discounts = await this.discountModel.find({ category: categoryId });
+    return { discounts };
   }
 
   async findAllBySection(sectionId: string) {
-    return await this.discountModel.find({ section: sectionId });
+    const discounts = await this.discountModel.find({ section: sectionId });
+    return { discounts };
   }
 }
