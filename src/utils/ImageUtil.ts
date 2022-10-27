@@ -1,13 +1,15 @@
 import { rename, unlink } from 'fs';
 
 export class ImageUtil {
-  public static renameImage(oldPath: string, newPath: string) {
-    rename(oldPath, `${newPath}`, (err) => {
-      console.log(err);
+  renameImage(oldPath: string, newPath: string) {
+    rename(oldPath, newPath, (err) => {
+      if (err) throw err;
     });
   }
 
-  public static removeImage(imagePath: string) {
-    unlink(imagePath, (err) => console.log(err));
+  removeImage(imagePath: string) {
+    unlink(`${process.env.PWD}/images/${imagePath}`, (err) => {
+      if (err) throw err;
+    });
   }
 }

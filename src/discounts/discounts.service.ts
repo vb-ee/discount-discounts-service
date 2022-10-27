@@ -8,6 +8,8 @@ import { ImageUtil } from 'src/utils/ImageUtil';
 
 @Injectable()
 export class DiscountsService {
+  imageUtil = new ImageUtil();
+
   constructor(
     @InjectModel(Discount.name) private discountModel: Model<DiscountDocument>,
   ) {}
@@ -16,8 +18,8 @@ export class DiscountsService {
     createDiscountDto: CreateDiscountDto,
     file: Express.Multer.File,
   ) {
-    const imageUrl = `${file.destination}/${file.originalname}`;
-    ImageUtil.renameImage(file.path, imageUrl);
+    const imageUrl = file.originalname;
+    this.imageUtil.renameImage(file.path, `${file.destination}/${imageUrl}`);
 
     const discountToCreate = { imageUrl, ...createDiscountDto };
 
@@ -54,9 +56,9 @@ export class DiscountsService {
       throw new NotFoundException(`Discount with id ${id} not found`);
 
     if (file) {
-      ImageUtil.removeImage(discount.imageUrl);
-      imageUrl = `${file.destination}/${file.originalname}`;
-      ImageUtil.renameImage(file.path, imageUrl);
+      this.imageUtil.removeImage(discount.imageUrl);
+      imageUrl = file.originalname;
+      this.imageUtil.renameImage(file.path, `${file.destination}/${imageUrl}`);
     }
 
     const discountToUpdate = { imageUrl, ...updateDiscountDto };
@@ -69,7 +71,7 @@ export class DiscountsService {
     if (!discount)
       throw new NotFoundException(`Category with id ${id} not found`);
 
-    ImageUtil.removeImage(discount.imageUrl);
+    this.imageUtil.removeImage(discount.imageUrl);
 
     return;
   }
