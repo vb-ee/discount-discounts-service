@@ -1,7 +1,7 @@
 import { Schema, createConnection } from 'mongoose';
 
 const categoryDatabase = createConnection(
-  'mongodb://categories-service-db/categories',
+  'mongodb://categories-service-db:27017/categories',
 );
 // Create an interface representing a document in MongoDB.
 export interface ICategory {

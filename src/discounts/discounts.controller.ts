@@ -11,6 +11,7 @@ import {
   ParseFilePipeBuilder,
   UploadedFile,
   HttpCode,
+  Query,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { join } from 'path';
@@ -82,13 +83,13 @@ export class DiscountsController {
     return this.discountsService.remove(id);
   }
 
-  @Get(':categoryId')
-  findAllByCategory(@Param('categoryId') categoryId: string) {
+  @Get()
+  findAllByCategory(@Query('categoryId') categoryId: string) {
     return this.discountsService.findAllByCategory(categoryId);
   }
 
-  @Get(':sectionId')
-  findAllBySection(@Param('sectionId') sectionId: string) {
-    return this.discountsService.findAllByCategory(sectionId);
+  @Get()
+  findAllBySection(@Query('sectionId') sectionId: string) {
+    return this.discountsService.findAllBySection(sectionId);
   }
 }

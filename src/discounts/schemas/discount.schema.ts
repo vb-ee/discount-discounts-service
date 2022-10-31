@@ -25,10 +25,10 @@ export class Discount {
   @Prop()
   expiryDate: Date;
 
-  @Prop({ type: MongooseSchema.Types.ObjectId, ref: Section })
+  @Prop({ type: MongooseSchema.Types.ObjectId, ref: Section, required: false })
   section: Types.ObjectId;
 
-  @Prop({ type: MongooseSchema.Types.ObjectId, ref: Category })
+  @Prop({ type: MongooseSchema.Types.ObjectId, ref: Category, required: false })
   category: Types.ObjectId;
 }
 

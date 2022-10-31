@@ -6,6 +6,7 @@ import {
   Max,
   MinDate,
   IsMongoId,
+  IsOptional,
 } from 'class-validator';
 
 export class CreateDiscountDto {
@@ -25,8 +26,10 @@ export class CreateDiscountDto {
   expiryDate: Date;
 
   @IsMongoId()
+  @IsOptional()
   section: string;
 
   @IsMongoId()
+  @IsOptional()
   category: string;
 }
