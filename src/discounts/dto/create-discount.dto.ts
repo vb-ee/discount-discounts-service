@@ -27,9 +27,9 @@ export class CreateDiscountDto {
 
   @IsMongoId()
   @IsOptional()
-  section: string;
+  sectionId: string;
 
   @IsMongoId()
   @IsOptional()
-  category: string;
+  categoryId: string;
 }

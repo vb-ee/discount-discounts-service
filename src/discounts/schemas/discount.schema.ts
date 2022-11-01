@@ -1,7 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Schema as MongooseSchema, Types } from 'mongoose';
-import { Category } from './category.schema';
-import { Section } from './section.schema';
 
 export type DiscountDocument = Discount & Document;
 
@@ -25,11 +23,11 @@ export class Discount {
   @Prop()
   expiryDate: Date;
 
-  @Prop({ type: MongooseSchema.Types.ObjectId, ref: Section, required: false })
-  section: Types.ObjectId;
+  @Prop({ type: MongooseSchema.Types.ObjectId, required: false })
+  sectionId: Types.ObjectId;
 
-  @Prop({ type: MongooseSchema.Types.ObjectId, ref: Category, required: false })
-  category: Types.ObjectId;
+  @Prop({ type: MongooseSchema.Types.ObjectId, required: false })
+  categoryId: Types.ObjectId;
 }
 
 export const DiscountSchema = SchemaFactory.createForClass(Discount);

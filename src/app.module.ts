@@ -14,7 +14,7 @@ import { restrictToAdmin } from './middlewares/restrict.middleware';
 @Module({
   imports: [
     DiscountsModule,
-    MongooseModule.forRoot('mongodb://discounts-service-db:27017/discounts'),
+    MongooseModule.forRoot(<string>process.env.MONGO_DB_URI),
   ],
   controllers: [AppController],
   providers: [AppService],
