@@ -1,15 +1,17 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+import { generateImageUrl, messageBroker } from '@payhasly-discount/common';
 import { Model } from 'mongoose';
 import { CreateDiscountDto } from './dto/create-discount.dto';
 import { UpdateDiscountDto } from './dto/update-discount.dto';
 import { Discount, DiscountDocument } from './schemas/discount.schema';
-import { ImageUtil } from 'src/utils/ImageUtil';
 
 @Injectable()
 export class DiscountsService {
-  imageUtil = new ImageUtil();
-
   constructor(
     @InjectModel(Discount.name) private discountModel: Model<DiscountDocument>,
   ) {}
@@ -18,11 +20,9 @@ export class DiscountsService {
     createDiscountDto: CreateDiscountDto,
     file: Express.Multer.File,
   ) {
-    const imageUrl = file.originalname;
-    this.imageUtil.renameImage(file.path, `${file.destination}/${imageUrl}`);
-
+    if (!file) throw new BadRequestException('File has to be defined');
+    const imageUrl = generateImageUrl('API_GATEWAY_URL', file.filename);
     const discountToCreate = { imageUrl, ...createDiscountDto };
-
     const discount = await this.discountModel.create(discountToCreate);
 
     return discount;
@@ -53,33 +53,24 @@ export class DiscountsService {
       throw new NotFoundException(`Discount with id ${id} not found`);
 
     if (file) {
-      this.imageUtil.removeImage(discount.imageUrl);
-      imageUrl = file.originalname;
-      this.imageUtil.renameImage(file.path, `${file.destination}/${imageUrl}`);
+      await messageBroker('AMQP_URL', discount.imageUrl, 'deleteImage');
+      imageUrl = generateImageUrl('API_GATEWAY_URL', file.filename);
     }
 
     const discountToUpdate = { imageUrl, ...updateDiscountDto };
     discount = await discount.update(discountToUpdate);
+
     return { discount };
   }
 
   async remove(id: string) {
-    const discount = await this.discountModel.findByIdAndDelete(id);
+    const discount = await this.discountModel.findById(id);
     if (!discount)
-      throw new NotFoundException(`Category with id ${id} not found`);
+      throw new NotFoundException(`Discount with id ${id} not found`);
 
-    this.imageUtil.removeImage(discount.imageUrl);
+    await messageBroker('AMQP_URL', discount.imageUrl, 'deleteImage');
+    await discount.delete();
 
     return;
-  }
-
-  async findAllByCategory(categoryId: string) {
-    const discounts = await this.discountModel.find({ categoryId });
-    return { discounts };
-  }
-
-  async findAllBySection(sectionId: string) {
-    const discounts = await this.discountModel.find({ sectionId });
-    return { discounts };
   }
 }

@@ -1,12 +1,11 @@
 import {
   IsString,
-  IsDate,
   IsNumber,
   Min,
   Max,
-  MinDate,
   IsMongoId,
   IsOptional,
+  IsDateString,
 } from 'class-validator';
 
 export class CreateDiscountDto {
@@ -21,8 +20,7 @@ export class CreateDiscountDto {
   @IsNumber()
   quantity: number;
 
-  @IsDate()
-  @MinDate(new Date())
+  @IsDateString()
   expiryDate: Date;
 
   @IsMongoId()
