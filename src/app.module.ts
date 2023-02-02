@@ -10,22 +10,32 @@ import { AppService } from './app.service';
 import { DiscountsController } from './discounts/discounts.controller';
 import { DiscountsModule } from './discounts/discounts.module';
 import { CategoriesModule } from './categories/categories.module';
-import { SectionsModule } from './sections/sections.module';
 import {
   restrictToAdmin,
   authHandler,
   Tokens,
+  accessEnv,
 } from '@payhasly-discount/common';
 import { CategoriesController } from './categories/categories.controller';
-import { SectionsController } from './sections/sections.controller';
 import { uploadImage } from './middleware/uploadImage.middleware';
+import { Discount, DiscountSchema } from './discounts/schemas/discount.schema';
 
 @Module({
   imports: [
     DiscountsModule,
-    MongooseModule.forRoot(<string>process.env.MONGO_DB_URI),
+    MongooseModule.forRoot(accessEnv('MONGO_DB_URI')),
     CategoriesModule,
-    SectionsModule,
+    MongooseModule.forFeatureAsync([
+      {
+        name: Discount.name,
+        useFactory: () => {
+          const schema = DiscountSchema;
+          // eslint-disable-next-line @typescript-eslint/no-var-requires
+          schema.plugin(require('mongoose-autopopulate'));
+          return schema;
+        },
+      },
+    ]),
   ],
   controllers: [AppController],
   providers: [AppService],
@@ -47,14 +57,6 @@ export class AppModule implements NestModule {
         { path: 'categories/:id/discounts', method: RequestMethod.GET },
       )
       .forRoutes(CategoriesController);
-    consumer
-      .apply(authHandler(Tokens.accessToken, 'JWT_ACCESS'), restrictToAdmin())
-      .exclude(
-        { path: 'sections', method: RequestMethod.GET },
-        { path: 'sections/:id', method: RequestMethod.GET },
-        { path: 'sections/:id/discounts', method: RequestMethod.GET },
-      )
-      .forRoutes(SectionsController);
     consumer
       .apply(uploadImage.single('category'))
       .forRoutes(

@@ -1,11 +1,19 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Schema as MongooseSchema } from 'mongoose';
 import { Category } from 'src/categories/schemas/category.schema';
-import { Section } from 'src/sections/schemas/section.schema';
 
 export type DiscountDocument = Discount & Document;
 
-@Schema({ timestamps: false })
+@Schema({
+  timestamps: false,
+  toJSON: {
+    transform(doc, ret) {
+      ret.id = ret._id;
+      delete ret._id;
+      delete ret.__v;
+    },
+  },
+})
 export class Discount {
   @Prop()
   title: string;
@@ -22,10 +30,11 @@ export class Discount {
   @Prop()
   expiryDate: Date;
 
-  @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Section' })
-  section: Section;
-
-  @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Category' })
+  @Prop({
+    type: MongooseSchema.Types.ObjectId,
+    ref: 'Category',
+    autopopulate: true,
+  })
   category: Category;
 }
 

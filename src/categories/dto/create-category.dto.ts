@@ -1,4 +1,4 @@
-import { IsHexColor, IsString } from 'class-validator';
+import { IsHexColor, IsOptional, IsString, IsUrl } from 'class-validator';
 export class CreateCategoryDto {
   @IsString()
   title: string;
@@ -6,4 +6,8 @@ export class CreateCategoryDto {
   @IsString()
   @IsHexColor()
   color: string;
+
+  @IsUrl()
+  @IsOptional()
+  imageUrl: string;
 }

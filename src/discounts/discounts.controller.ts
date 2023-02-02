@@ -13,7 +13,7 @@ import {
 import { DiscountsService } from './discounts.service';
 import { CreateDiscountDto } from './dto/create-discount.dto';
 import { UpdateDiscountDto } from './dto/update-discount.dto';
-import { Express, Request } from 'express';
+import { Request } from 'express';
 
 @Controller('discounts')
 export class DiscountsController {
