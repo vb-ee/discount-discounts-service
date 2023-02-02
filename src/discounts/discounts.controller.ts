@@ -8,22 +8,20 @@ import {
   Delete,
   HttpStatus,
   HttpCode,
+  Req,
 } from '@nestjs/common';
 import { DiscountsService } from './discounts.service';
 import { CreateDiscountDto } from './dto/create-discount.dto';
 import { UpdateDiscountDto } from './dto/update-discount.dto';
-import { Express } from 'express';
+import { Express, Request } from 'express';
 
 @Controller('discounts')
 export class DiscountsController {
   constructor(private readonly discountsService: DiscountsService) {}
 
   @Post()
-  create(
-    @Body() createDiscountDto: CreateDiscountDto,
-    file: Express.Multer.File,
-  ) {
-    return this.discountsService.create(createDiscountDto, file);
+  create(@Body() createDiscountDto: CreateDiscountDto, @Req() req: Request) {
+    return this.discountsService.create(createDiscountDto, req.file);
   }
 
   @Get()
@@ -40,9 +38,9 @@ export class DiscountsController {
   update(
     @Param('id') id: string,
     @Body() updateDiscountDto: UpdateDiscountDto,
-    file?: Express.Multer.File,
+    @Req() req: Request,
   ) {
-    return this.discountsService.update(id, updateDiscountDto, file);
+    return this.discountsService.update(id, updateDiscountDto, req.file);
   }
 
   @Delete(':id')

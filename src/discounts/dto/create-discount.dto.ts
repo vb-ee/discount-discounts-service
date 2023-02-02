@@ -17,17 +17,14 @@ export class CreateDiscountDto {
   @Max(100.0)
   discount: number;
 
-  @IsNumber()
-  quantity: number;
-
   @IsDateString()
   expiryDate: Date;
 
   @IsMongoId()
   @IsOptional()
-  sectionId: string;
+  section: string;
 
   @IsMongoId()
   @IsOptional()
-  categoryId: string;
+  category: string;
 }

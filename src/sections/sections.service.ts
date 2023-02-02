@@ -34,11 +34,11 @@ export class SectionsService {
   }
 
   async update(id: string, updateSectionDto: UpdateSectionDto) {
-    let section = await this.sectionModel.findById(id);
+    const section = await this.sectionModel.findById(id);
     if (!section)
       throw new NotFoundException(`Section with id ${id} not found`);
-    section = await section.update(updateSectionDto);
-    return { section };
+    await section.updateOne(updateSectionDto);
+    return { _id: section._id, ...updateSectionDto };
   }
 
   async remove(id: string) {

@@ -4,7 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { generateImageUrl, messageBroker } from '@payhasly-discount/common';
+import { generateImageUrl, sendMessage } from '@payhasly-discount/common';
 import { Model } from 'mongoose';
 import { CreateDiscountDto } from './dto/create-discount.dto';
 import { UpdateDiscountDto } from './dto/update-discount.dto';
@@ -48,19 +48,19 @@ export class DiscountsService {
   ) {
     let imageUrl: string;
 
-    let discount = await this.discountModel.findById(id);
+    const discount = await this.discountModel.findById(id);
     if (!discount)
       throw new NotFoundException(`Discount with id ${id} not found`);
 
     if (file) {
-      await messageBroker('AMQP_URL', discount.imageUrl, 'deleteImage');
+      await sendMessage('AMQP_URL', discount.imageUrl, 'deleteImage');
       imageUrl = generateImageUrl('API_GATEWAY_URL', file.filename);
     }
 
     const discountToUpdate = { imageUrl, ...updateDiscountDto };
-    discount = await discount.update(discountToUpdate);
+    await discount.updateOne(discountToUpdate);
 
-    return { discount };
+    return { _id: discount._id, ...discountToUpdate };
   }
 
   async remove(id: string) {
@@ -68,7 +68,7 @@ export class DiscountsService {
     if (!discount)
       throw new NotFoundException(`Discount with id ${id} not found`);
 
-    await messageBroker('AMQP_URL', discount.imageUrl, 'deleteImage');
+    await sendMessage('AMQP_URL', discount.imageUrl, 'deleteImage');
     await discount.delete();
 
     return;

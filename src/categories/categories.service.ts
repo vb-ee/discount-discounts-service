@@ -4,7 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { generateImageUrl, messageBroker } from '@payhasly-discount/common';
+import { generateImageUrl, sendMessage } from '@payhasly-discount/common';
 import { Model } from 'mongoose';
 import {
   Discount,
@@ -56,21 +56,20 @@ export class CategoriesService {
     updateCategoryDto: UpdateCategoryDto,
     file?: Express.Multer.File,
   ) {
-    const { title, color } = updateCategoryDto;
     let imageUrl: string;
 
-    let category = await this.categoryModel.findById(id);
+    const category = await this.categoryModel.findById(id);
     if (!category)
       throw new NotFoundException(`Category with id ${id} not found`);
 
     if (file) {
-      await messageBroker('AMQP_URL', category.imageUrl, 'deleteImage');
+      await sendMessage('AMQP_URL', category.imageUrl, 'deleteImage');
       imageUrl = generateImageUrl('API_GATEWAY_URL', file.filename);
     }
 
-    category = await category.update({ title, color, imageUrl });
+    await category.updateOne({ imageUrl, ...updateCategoryDto });
 
-    return { category };
+    return { _id: category._id, imageUrl, ...updateCategoryDto };
   }
 
   async remove(id: string) {
@@ -78,7 +77,7 @@ export class CategoriesService {
     if (!category)
       throw new NotFoundException(`Category with id ${id} not found`);
 
-    await messageBroker('AMQP_URL', category.imageUrl, 'deleteImage');
+    await sendMessage('AMQP_URL', category.imageUrl, 'deleteImage');
     await category.delete();
 
     return;

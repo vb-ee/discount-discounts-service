@@ -59,13 +59,13 @@ export class AppModule implements NestModule {
       .apply(uploadImage.single('category'))
       .forRoutes(
         { path: 'categories', method: RequestMethod.POST },
-        { path: 'categories/:id', method: RequestMethod.PUT },
+        { path: 'categories/:id', method: RequestMethod.PATCH },
       );
     consumer
       .apply(uploadImage.single('discount'))
       .forRoutes(
         { path: 'discounts', method: RequestMethod.POST },
-        { path: 'discounts/:id', method: RequestMethod.PUT },
+        { path: 'discounts/:id', method: RequestMethod.PATCH },
       );
   }
 }

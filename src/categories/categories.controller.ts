@@ -6,18 +6,15 @@ import {
   Patch,
   Param,
   Delete,
-  UploadedFile,
-  UseInterceptors,
-  ParseFilePipeBuilder,
   HttpStatus,
   HttpCode,
+  Req,
 } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
 import { Express } from 'express';
-import { join } from 'path';
 import { CategoriesService } from './categories.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
+import { Request } from 'express';
 
 @Controller('categories')
 export class CategoriesController {
@@ -26,9 +23,9 @@ export class CategoriesController {
   @Post()
   async create(
     @Body() createCategoryDto: CreateCategoryDto,
-    file: Express.Multer.File,
+    @Req() req: Request,
   ) {
-    return await this.categoriesService.create(createCategoryDto, file);
+    return await this.categoriesService.create(createCategoryDto, req.file);
   }
 
   @Get()
@@ -45,9 +42,9 @@ export class CategoriesController {
   async update(
     @Param('id') id: string,
     @Body() updateCategoryDto: UpdateCategoryDto,
-    file?: Express.Multer.File,
+    @Req() req: Request,
   ) {
-    return await this.categoriesService.update(id, updateCategoryDto, file);
+    return await this.categoriesService.update(id, updateCategoryDto, req.file);
   }
 
   @Delete(':id')
