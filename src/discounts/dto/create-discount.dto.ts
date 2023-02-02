@@ -13,13 +13,16 @@ export class CreateDiscountDto {
   @IsString()
   title: string;
 
+  @IsString()
+  description: string;
+
   @IsNumber()
   @Min(0.0)
   @Max(100.0)
   discount: number;
 
   @IsDateString()
-  expiryDate: Date;
+  expiryAt: Date;
 
   @IsUrl()
   @IsOptional()

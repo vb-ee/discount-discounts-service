@@ -18,24 +18,12 @@ import {
 } from '@payhasly-discount/common';
 import { CategoriesController } from './categories/categories.controller';
 import { uploadImage } from './middleware/uploadImage.middleware';
-import { Discount, DiscountSchema } from './discounts/schemas/discount.schema';
 
 @Module({
   imports: [
     DiscountsModule,
     MongooseModule.forRoot(accessEnv('MONGO_DB_URI')),
     CategoriesModule,
-    MongooseModule.forFeatureAsync([
-      {
-        name: Discount.name,
-        useFactory: () => {
-          const schema = DiscountSchema;
-          // eslint-disable-next-line @typescript-eslint/no-var-requires
-          schema.plugin(require('mongoose-autopopulate'));
-          return schema;
-        },
-      },
-    ]),
   ],
   controllers: [AppController],
   providers: [AppService],

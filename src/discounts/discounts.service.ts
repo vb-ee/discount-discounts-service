@@ -29,12 +29,12 @@ export class DiscountsService {
   }
 
   async findAll() {
-    const discounts = await this.discountModel.find();
+    const discounts = await this.discountModel.find().populate('category');
     return { discounts };
   }
 
   async findOne(id: string) {
-    const discount = await this.discountModel.findById(id);
+    const discount = await this.discountModel.findById(id).populate('category');
     if (!discount)
       throw new NotFoundException(`Discount with id ${id} not found`);
 

@@ -19,6 +19,9 @@ export class Discount {
   title: string;
 
   @Prop()
+  description: string;
+
+  @Prop()
   discount: number;
 
   @Prop()
@@ -28,12 +31,11 @@ export class Discount {
   createdDate: Date;
 
   @Prop()
-  expiryDate: Date;
+  expiryAt: Date;
 
   @Prop({
     type: MongooseSchema.Types.ObjectId,
     ref: 'Category',
-    autopopulate: true,
   })
   category: Category;
 }
