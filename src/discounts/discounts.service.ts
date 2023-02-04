@@ -67,10 +67,8 @@ export class DiscountsService {
     const discount = await this.discountModel.findById(id);
     if (!discount)
       throw new NotFoundException(`Discount with id ${id} not found`);
-
+    await discount.deleteOne();
     await sendMessage('AMQP_URL', discount.imageUrl, 'deleteImage');
-    await discount.delete();
-
     return;
   }
 }

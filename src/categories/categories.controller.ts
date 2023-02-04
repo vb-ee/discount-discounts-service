@@ -10,7 +10,6 @@ import {
   HttpCode,
   Req,
 } from '@nestjs/common';
-import { Express } from 'express';
 import { CategoriesService } from './categories.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';

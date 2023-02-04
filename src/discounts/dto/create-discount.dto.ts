@@ -4,9 +4,7 @@ import {
   Min,
   Max,
   IsMongoId,
-  IsOptional,
   IsDateString,
-  IsUrl,
 } from 'class-validator';
 
 export class CreateDiscountDto {
@@ -23,10 +21,6 @@ export class CreateDiscountDto {
 
   @IsDateString()
   expiryAt: Date;
-
-  @IsUrl()
-  @IsOptional()
-  imageUrl: string;
 
   @IsMongoId()
   category: string;

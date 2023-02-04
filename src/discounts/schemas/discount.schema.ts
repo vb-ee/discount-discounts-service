@@ -28,7 +28,7 @@ export class Discount {
   imageUrl: string;
 
   @Prop({ default: new Date() })
-  createdDate: Date;
+  createdAt: Date;
 
   @Prop()
   expiryAt: Date;
