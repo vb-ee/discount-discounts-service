@@ -26,6 +26,10 @@
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
+This is the Discount microservice for the Discounting Platform project. This service is responsible for CRUD operations for on discount entities.
+
+If you want to run the entire project, please go to the [parent repository](https://github.com/vb-ee/discount-platform).
+
 ## Installation
 
 ```bash
